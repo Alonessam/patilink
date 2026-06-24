@@ -40,13 +40,13 @@ Below is the high-level system architecture showing how the client, backend API,
 ```mermaid
 graph TD
     subgraph Frontend ["Frontend (React Client - Port 5173)"]
-        UI[Vite / React App] -->|Axios Requests| Proxy[Vite Proxy]
+        UI["Vite & React App"] -->|Axios Requests| Proxy["Vite Proxy"]
     end
 
     subgraph Backend ["Backend (C# API Server - Port 5055)"]
-        Proxy -->|/api/*| API[Minimal API Endpoints]
-        API -->|Entity Framework Core| DB[(SQLite Database)]
-        Worker["CareStatus Background Service"] -->|Scans every 15 min| DB
+        Proxy -->|API Requests| API["Minimal API Endpoints"]
+        API -->|EF Core| DB[("SQLite Database")]
+        Worker["CareStatus Background Service"] -->|Database Scan| DB
     end
     
     style UI fill:#20232a,stroke:#61dafb,stroke-width:2px,color:#fff
