@@ -33,6 +33,30 @@ PatiLink digitalizes and coordinates care processes for stray animals living on 
 
 ---
 
+## 🏗️ System Architecture
+
+Below is the high-level system architecture showing how the client, backend API, database, and background services interact:
+
+```mermaid
+graph TD
+    subgraph Frontend (React Client - Port 5173)
+        UI[Vite / React App] -->|Axios Requests| Proxy[Vite Proxy]
+    end
+
+    subgraph Backend (C# API Server - Port 5055)
+        Proxy -->|/api/*| API[Minimal API Endpoints]
+        API -->|Entity Framework Core| DB[(SQLite Database)]
+        Worker[CareStatus Background Service] -->|Scans every 15 min| DB
+    end
+    
+    style UI fill:#20232a,stroke:#61dafb,stroke-width:2px,color:#fff
+    style API fill:#512bd4,stroke:#fff,stroke-width:1px,color:#fff
+    style DB fill:#003b57,stroke:#fff,stroke-width:1px,color:#fff
+    style Worker fill:#e28743,stroke:#fff,stroke-width:1px,color:#fff
+```
+
+---
+
 ## ✨ Key Features
 
 - 🐱 **Animal Directory**: Dynamic catalog with filtering options (by campus location, urgency, status).
