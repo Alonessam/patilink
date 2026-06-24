@@ -1,183 +1,190 @@
-# 🐾 PatiLink - Campus Stray Animal Care and Task Coordination System
+# 🐾 PatiLink - Campus Stray Animal Care & Task Coordination System
 
-> Web Programming Course Project
+> An elegant, secure, and modern web application developed for campus stray animal care coordination. Featured as a university course term project.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/.NET_8-Minimal_API-512BD4?style=for-the-badge&logo=.net&logoColor=white" alt=".NET 8" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite" />
+  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License" />
+</p>
+
+---
+
+## 📋 Table of Contents
+- [About the Project](#-about-the-project)
+- [Key Features](#-key-features)
+- [System Architecture](#-system-architecture)
+- [Technology Stack](#-technology-stack)
+- [Project Directory Structure](#-project-directory-structure)
+- [Setup and Run](#-setup-and-run)
+- [Demo Users & QR Codes](#-demo-users--qr-codes)
+- [API Endpoints](#-api-endpoints)
+- [License](#-license)
+
+---
 
 ## 📋 About the Project
 
-PatiLink is a web application that digitalizes the care processes of stray animals on university campuses. It aims to improve the quality of life of animals through volunteer coordination, QR-coded task verification, and an automatic care tracking system.
+PatiLink digitalizes and coordinates care processes for stray animals living on university campuses. Built with a responsive React frontend and a fast ASP.NET Core Minimal API backend, it connects volunteers, campus veterinarians, and administrators to ensure that no animal is left without water, food, or medical attention.
 
 ![PatiLink Dashboard](./ui-smoke.png)
 
-### Core Features
+---
 
-| Feature | Description |
-|---------|-------------|
-| 🐱 Animal Management | Registration, tracking, and status monitoring of stray animals on campus |
-| 📍 Location Tracking | Map-based management of feeding points |
-| ✅ Task System | Assigning and tracking feeding, water, and care tasks for volunteers |
-| 📱 QR Code Verification | Task completion approval using QR codes located at feeding points |
-| ⏰ 6-Hour Care Rule | Background service that automatically marks animals as "Hungry" if they are not fed for 6 hours |
-| 🏥 Health Records | Veterinarian examination, vaccination, and treatment history |
-| 📦 Need Management | Tracking of needs such as food, shelter, and medicine |
-| 🎁 Donation Management | Donation commitments and tracking for specified needs |
-| 🔐 JWT Authentication | Role-based access control (Admin, Vet, Volunteer) |
+## ✨ Key Features
+
+- 🐱 **Animal Directory**: Dynamic catalog with filtering options (by campus location, urgency, status).
+- 📍 **Interactive Location Map**: Leaflet.js-powered campus map showing live feeding points. Markers dynamic color shift (green for routine, pulsing red for hungry/urgent).
+- 📱 **Smart Location-Verified QR System**: Volunteers scan physical QR codes at feeding points using their mobile camera. The system checks location validity and highlights tasks on screen, preventing remote task manipulation.
+- ⏰ **6-Hour Care Policy**: An integrated backend background service scans data every 15 minutes, automatically shifting care status to "Hungry" if 6 hours have passed since last feeding.
+- 🏥 **Health & Medical Records**: Dedicated panels for veterinarians to document check-ups, vaccines, and treatments, automatically triggering follow-up tasks.
+- 📦 **Need & Donation Tracking**: Real-time listing of items needed (food, medication, dog beds) and tracking of volunteer donation commitments.
+- 🔐 **Secure Role-Based Access Control**: Standard JWT authentication protecting APIs according to roles (`Admin`, `Vet`, `Volunteer`).
+
+---
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- **ASP.NET Core 8** — Minimal API architecture
-- **Entity Framework Core** — ORM (Code-First approach)
-- **SQLite / SQL Server** — Relational database (Default: SQLite)
-- **JWT Bearer** — Token-based authentication
-- **BCrypt.Net** — Password hashing
-- **BackgroundService** — Scheduler (6-hour care rule)
+*   **.NET 8 (ASP.NET Core)** — Minimal API framework for lightweight, fast endpoints.
+*   **Entity Framework Core (EF Core)** — Code-First ORM supporting relational modeling.
+*   **SQLite** — Default embedded database for easy setup (SQL Server option available in settings).
+*   **JWT Bearer Authentication** — Secure token-based user sessions.
+*   **BCrypt.Net-Next** — Modern password hashing.
+*   **Hosted Service (BackgroundService)** — Scheduler for the 6-hour status checker.
 
 ### Frontend
-- **React 19** (Created with Vite)
-- **Tailwind CSS v4** — Utility-first CSS framework
-- **React Router v7** — Page routing
-- **Axios** — HTTP client
-- **Lucide React** — Icon library
+*   **React 19** — Powered by **Vite** for fast, optimized hot-reloads.
+*   **Tailwind CSS v4** — Utility-first styling with modern native HSL palettes and custom transitions.
+*   **React Router v7** — Declarative routing with guard components.
+*   **Leaflet & React Leaflet** — Interactive maps based on OpenStreetMap.
+*   **React QR Scanner** — Camera-based QR decoding.
+*   **Lucide React** — Premium icon set.
 
-## 📂 Project Structure
+---
+
+## 📂 Project Directory Structure
 
 ```
 patilink/
-├── server/                        # Backend
+├── server/                        # Backend API (C#)
 │   └── PatiLink.Api/
 │       ├── Data/
-│       │   ├── PatiLinkDbContext.cs    # Database context class
-│       │   └── DbSeeder.cs             # Seed data
+│       │   ├── PatiLinkDbContext.cs    # EF Core context class
+│       │   └── DbSeeder.cs             # Automatic demo data seed logic
 │       ├── Models/
-│       │   └── PatiLinkModels.cs       # Data models and DTOs
+│       │   └── PatiLinkModels.cs       # Data schema & DTO definitions
 │       ├── Services/
-│       │   └── CareStatusBackgroundService.cs  # 6-hour care scheduler
-│       ├── Program.cs                  # API endpoints and configuration
-│       └── appsettings.json            # Connection and JWT settings
-├── client/                        # Frontend
+│       │   └── CareStatusBackgroundService.cs  # 6-hour care rule scheduler
+│       ├── Program.cs                  # Config and API routing endpoints
+│       └── appsettings.json            # DB & JWT configurations
+├── client/                        # Frontend (React)
 │   └── src/
 │       ├── api/
-│       │   └── apiClient.js            # Axios interceptor configuration
+│       │   └── apiClient.js            # Axios middleware & headers configuration
 │       ├── components/
-│       │   ├── Navbar.jsx              # Navigation menu (Role-based)
-│       │   ├── Footer.jsx              # Footer and quick links
-│       │   └── ProtectedRoute.jsx      # Auth control (Higher-Order Component)
+│       │   ├── Navbar.jsx              # Responsive, role-based navigation bar
+│       │   ├── Footer.jsx              # Footer details
+│       │   └── ProtectedRoute.jsx      # Route guardian checks
 │       ├── contexts/
-│       │   └── AuthContext.jsx         # Global user state management
+│       │   └── AuthContext.jsx         # Global context for active sessions
 │       ├── pages/
-│       │   ├── Home.jsx                # Home page (statistics + critical warnings)
-│       │   ├── Animals.jsx             # Animal list (Search and filtering)
-│       │   ├── AnimalDetail.jsx        # Animal details, health and tasks
-│       │   ├── Needs.jsx               # Need management
-│       │   ├── Donations.jsx           # Donation management
-│       │   ├── HealthLogs.jsx          # Health records
-│       │   ├── FeedingPoints.jsx       # List of feeding points
-│       │   ├── Contact.jsx             # Contact and campus reporting
-│       │   ├── VolunteerPanel.jsx      # Volunteer panel (QR simulation)
-│       │   └── AdminPanel.jsx          # Admin panel
-│       ├── App.jsx                     # Main application component (Router)
-│       ├── main.jsx                    # React root component
-│       └── index.css                   # Tailwind CSS configuration
-├── docs/                          # Documentation
-│   └── database-schema.md              # Database models and tables
-└── NuGet.Config
+│       │   ├── Home.jsx                # Summary metrics and quick alerts
+│       │   ├── Animals.jsx             # Animal index page
+│       │   ├── AnimalDetail.jsx        # Detail, health logs, and tasks
+│       │   ├── Needs.jsx               # Needs board
+│       │   ├── Donations.jsx           # Donation tracker
+│       │   ├── HealthLogs.jsx          # Veterinary logs
+│       │   ├── FeedingPoints.jsx       # Map-based location organizer
+│       │   ├── Contact.jsx             # User reports
+│       │   ├── VolunteerPanel.jsx      # Simulation of camera scan
+│       │   └── AdminPanel.jsx          # Admin settings
+│       ├── App.jsx                     # Route settings
+│       └── index.css                   # Tailwind CSS tokens
+├── docs/                          # Schema & documentation notes
+└── README.md
 ```
+
+---
 
 ## 🚀 Setup and Run
 
-### Requirements
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
-- [Node.js 18+](https://nodejs.org/)
+### Prerequisites
+*   [.NET 8 SDK](https://dotnet.microsoft.com/download)
+*   [Node.js 18+](https://nodejs.org/)
 
-### Step 1: Start the Backend
+### 1. Launch the Backend API
 ```bash
-cd patilink/server/PatiLink.Api
+cd server/PatiLink.Api
 dotnet run
 ```
-> The server runs by default on `http://localhost:5055`.
-> On first run, a SQLite database named `PatiLink.db` and demo seed data are automatically created.
-> 
-> ⚠️ **Security Note:** The project uses a pre-configured, hardcoded JWT Secret in development (`appsettings.json`). Ensure this is replaced with a secure key stored in environment variables for production environments.
+*   The server will start by default at `http://localhost:5055`.
+*   A `PatiLink.db` file will be created locally on first run and populated with rich sample data automatically.
+*   *Security Note:* A development secret key is defined in `appsettings.json`. Replace it with a secure environment variable key in production.
 
-### Step 2: Start the Frontend
+### 2. Launch the React Frontend
 ```bash
-cd patilink/client
-npm install      # Install dependencies on first run
+cd client
+npm install
 npm run dev
 ```
-> The React application runs on `http://localhost:5173`.
-> API requests are automatically proxied to the backend (Vite Proxy).
+*   The web app will run locally at `http://localhost:5173`.
+*   API requests are automatically proxied to the backend via Vite config.
 
-## 👤 Demo Users
+---
 
-| Email | Password | Role |
-|-------|----------|------|
-| admin@patilink.edu.tr | 123 | Admin |
-| vet@patilink.edu.tr | 123 | Vet |
-| gonullu@patilink.edu.tr | 123 | Volunteer |
+## 👤 Demo Users & QR Codes
 
-## 📱 Demo QR Codes
+### Test Accounts
+You can test the different access control levels using the following credentials:
 
-Codes that can be used in the QR simulation in the Volunteer Panel:
+| Email | Password | Role | Access Level |
+|---|---|---|---|
+| `admin@patilink.edu.tr` | `123` | Admin | Full control over locations, animals, and logs |
+| `vet@patilink.edu.tr` | `123` | Veterinarian | Can log health reports and bypass QR codes for medical tasks |
+| `gonullu@patilink.edu.tr` | `123` | Volunteer | Can assign themselves to tasks and resolve them via QR scan |
 
-| QR Code | Location |
-|---------|----------|
-| QR-ENG-001 | Faculty of Engineering |
-| QR-LIB-002 | Behind the Library |
-| QR-SPO-003 | Sports Hall |
+### QR Code Simulation
+In the Volunteer Panel, you can simulate camera input by inputting these codes corresponding to local points:
 
-## 🔌 API Endpoints
+| QR Code Identifier | Physical Location Point |
+|---|---|
+| `QR-ENG-001` | Faculty of Engineering |
+| `QR-LIB-002` | Behind the Library |
+| `QR-SPO-003` | Sports Hall |
+
+---
+
+## 🔌 API Endpoints Reference
 
 ### Authentication
-| Method | URL | Description |
-|--------|-----|-------------|
-| POST | `/api/auth/register` | New user registration |
-| POST | `/api/auth/login` | Login (returns JWT token) |
+*   `POST /api/auth/register` — Standard user registration.
+*   `POST /api/auth/login` — Login (returns JWT Token).
 
 ### Animals
-| Method | URL | Authorization | Description |
-|--------|-----|---------------|-------------|
-| GET | `/api/animals` | Public | List animals (filtering supported) |
-| GET | `/api/animals/{id}` | Public | Animal details |
-| POST | `/api/animals` | AdminOrVet | Add new animal |
-| PUT | `/api/animals/{id}` | AdminOrVet | Update animal |
-| DELETE| `/api/animals/{id}` | Admin | Delete animal |
+*   `GET /api/animals` — Retreive animal list (supports query parameters).
+*   `GET /api/animals/{id}` — Retrieve detailed record.
+*   `POST /api/animals` — Create a new entry (*Admin/Vet only*).
+*   `PUT /api/animals/{id}` — Update animal profile (*Admin/Vet only*).
+*   `DELETE /api/animals/{id}` — Remove animal profile (*Admin only*).
 
-### Tasks
-| Method | URL | Description |
-|--------|-----|-------------|
-| GET | `/api/tasks` | List tasks (filtered by userId) |
-| POST | `/api/tasks` | Create new task |
-| PATCH | `/api/tasks/{id}/assign` | Assign task to a volunteer |
-| POST | `/api/tasks/{id}/complete` | Complete task with QR |
+### Tasks & Care
+*   `GET /api/tasks` — List care duties.
+*   `POST /api/tasks` — Create task duty.
+*   `PATCH /api/tasks/{id}/assign` — Connect task with active volunteer.
+*   `POST /api/tasks/{id}/complete` — Finish task (validates location QR code).
 
 ### Needs & Donations
-| Method | URL | Description |
-|--------|-----|-------------|
-| GET | `/api/needs` | List needs |
-| POST | `/api/needs` | Report new need |
-| PATCH | `/api/needs/{id}/status` | Update need status |
-| GET | `/api/donations` | List donations |
-| POST | `/api/donations` | New donation commitment |
+*   `GET /api/needs` — List needed items.
+*   `POST /api/needs` — Register new campus need.
+*   `PATCH /api/needs/{id}/status` — Modify need status.
+*   `GET /api/donations` — Retrieve donation logs.
+*   `POST /api/donations` — Record new donation commitment.
 
-### Other
-| Method | URL | Description |
-|--------|-----|-------------|
-| GET | `/api/summary` | Home page statistics |
-| GET | `/api/locations` | List locations |
-| GET | `/api/health-logs` | List health records |
-| POST | `/api/qr/scan` | QR code scanning simulation |
-| GET/POST | `/api/reports` | Send/list reports |
-| GET/PATCH/DELETE | `/api/users` | Manage users |
-
-## 🏗️ Architectural Decisions
-
-1. **Minimal API**: Minimal API was preferred over the controller-based structure. It provides less boilerplate code and a faster development process.
-2. **SQLite Support**: SQLite is used by default for ease of presentation and testing. You can switch to SQL Server instantly from `appsettings.json`.
-3. **BackgroundService**: The 6-hour care rule is implemented using ASP.NET Core's built-in `BackgroundService` class. It runs every 15 minutes to update the status of animals that have not been fed.
-4. **Vite Proxy**: The React development server automatically proxies API requests to the C# backend, avoiding CORS issues.
-5. **Context API**: Frontend authentication operations and state management are handled via `AuthContext`.
+---
 
 ## 📄 License
 
-This project was developed within the scope of a university course assignment.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. Developed as a term project.
