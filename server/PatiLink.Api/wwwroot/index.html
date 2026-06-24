@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PatiLink</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">PL</div>
+          <div>
+            <strong>PatiLink</strong>
+            <span>Kampüs bakım sistemi</span>
+          </div>
+        </div>
+        <nav class="nav-list" aria-label="Ana menü">
+          <button class="nav-item is-active" data-view="dashboard">Panel</button>
+          <button class="nav-item" data-view="animals">Hayvanlar</button>
+          <button class="nav-item" data-view="tasks">Görevler</button>
+          <button class="nav-item" data-view="needs">İhtiyaçlar</button>
+          <button class="nav-item" data-view="admin">Yönetim</button>
+          <button class="nav-item" data-view="contact">Bildirim</button>
+        </nav>
+        <div class="login-box">
+          <label for="userSelect">Aktif kullanıcı</label>
+          <select id="userSelect"></select>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">İnternet Programcılığı Projesi</p>
+            <h1 id="viewTitle">PatiLink Operasyon Paneli</h1>
+          </div>
+          <div class="topbar-actions">
+            <button id="refreshButton" class="icon-button" title="Verileri yenile" aria-label="Verileri yenile">↻</button>
+            <a class="ghost-link" href="/api/bootstrap" target="_blank" rel="noreferrer">API</a>
+          </div>
+        </header>
+
+        <section id="alertHost" class="alert-host" aria-live="polite"></section>
+
+        <section id="dashboardView" class="view is-active">
+          <div class="metric-grid" id="metricGrid"></div>
+          <div class="split-layout">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Acil Görevler</h2>
+                <button class="text-button" data-jump="tasks">Tümünü gör</button>
+              </div>
+              <div id="urgentTasks" class="list-stack"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Son QR İşlemleri</h2>
+              </div>
+              <div id="recentLogs" class="list-stack"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="animalsView" class="view">
+          <div class="toolbar">
+            <input id="animalSearch" type="search" placeholder="Ad, tür veya açıklama ara" />
+            <select id="facultyFilter"></select>
+            <select id="urgencyFilter">
+              <option>Tümü</option>
+              <option>Kritik</option>
+              <option>Yüksek</option>
+              <option>Rutin</option>
+            </select>
+            <select id="statusFilter">
+              <option>Tümü</option>
+              <option>Aç</option>
+              <option>Tok</option>
+              <option>Rutin</option>
+              <option>Tedavide</option>
+            </select>
+          </div>
+          <div id="animalGrid" class="animal-grid"></div>
+        </section>
+
+        <section id="tasksView" class="view">
+          <div class="split-layout wide-left">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Görev Listesi</h2>
+              </div>
+              <div id="taskList" class="list-stack"></div>
+            </section>
+            <section class="panel sticky-panel">
+              <div class="panel-header">
+                <h2>QR Görev İşlemi</h2>
+              </div>
+              <form id="completeTaskForm" class="form-grid">
+                <label>
+                  Görev
+                  <select name="taskId" required></select>
+                </label>
+                <label>
+                  QR kod
+                  <input name="qrCode" placeholder="Örn. QR-KUT-002" required />
+                </label>
+                <label>
+                  İşlem notu
+                  <textarea name="note" rows="4" placeholder="Mama ve su yenilendi." required></textarea>
+                </label>
+                <button type="submit" class="primary-button">Görevi Tamamla</button>
+              </form>
+              <div class="qr-hints">
+                <span>QR-MUH-001</span>
+                <span>QR-KUT-002</span>
+                <span>QR-SPOR-003</span>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="needsView" class="view">
+          <div class="split-layout wide-left">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>İhtiyaç Takibi</h2>
+              </div>
+              <div id="needList" class="need-table"></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Yeni İhtiyaç</h2>
+              </div>
+              <form id="needForm" class="form-grid">
+                <label>
+                  Hayvan
+                  <select name="animalId" required></select>
+                </label>
+                <label>
+                  İhtiyaç türü
+                  <select name="needType" required>
+                    <option>Mama</option>
+                    <option>İlaç</option>
+                    <option>Barınma</option>
+                    <option>Tedavi</option>
+                  </select>
+                </label>
+                <label>
+                  Miktar
+                  <input name="amount" placeholder="2 kg" required />
+                </label>
+                <label>
+                  Aciliyet
+                  <select name="urgency">
+                    <option>Rutin</option>
+                    <option>Yüksek</option>
+                    <option>Kritik</option>
+                  </select>
+                </label>
+                <label class="full-span">
+                  Açıklama
+                  <textarea name="description" rows="3" required></textarea>
+                </label>
+                <button type="submit" class="primary-button">İhtiyaç Ekle</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="adminView" class="view">
+          <div class="admin-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Hayvan Ekle</h2>
+              </div>
+              <form id="animalForm" class="form-grid">
+                <label>
+                  Ad / Tanım
+                  <input name="name" required />
+                </label>
+                <label>
+                  Tür
+                  <select name="species">
+                    <option>Kedi</option>
+                    <option>Köpek</option>
+                  </select>
+                </label>
+                <label>
+                  Cinsiyet
+                  <select name="gender">
+                    <option>Bilinmiyor</option>
+                    <option>Dişi</option>
+                    <option>Erkek</option>
+                  </select>
+                </label>
+                <label>
+                  Konum
+                  <select name="locationId" required></select>
+                </label>
+                <label>
+                  Durum
+                  <select name="careStatus">
+                    <option>Rutin</option>
+                    <option>Aç</option>
+                    <option>Tok</option>
+                    <option>Tedavide</option>
+                  </select>
+                </label>
+                <label>
+                  Aciliyet
+                  <select name="urgency">
+                    <option>Rutin</option>
+                    <option>Yüksek</option>
+                    <option>Kritik</option>
+                  </select>
+                </label>
+                <label class="full-span">
+                  Fotoğraf URL
+                  <input name="photoUrl" placeholder="Boş bırakılırsa varsayılan görsel kullanılır" />
+                </label>
+                <label class="full-span">
+                  Açıklama
+                  <textarea name="description" rows="3" required></textarea>
+                </label>
+                <button type="submit" class="primary-button">Hayvan Ekle</button>
+              </form>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Görev Oluştur</h2>
+              </div>
+              <form id="taskForm" class="form-grid">
+                <label>
+                  Hayvan
+                  <select name="animalId" required></select>
+                </label>
+                <label>
+                  Konum
+                  <select name="locationId" required></select>
+                </label>
+                <label>
+                  Görev türü
+                  <select name="taskType">
+                    <option>Besleme</option>
+                    <option>Kontrol</option>
+                    <option>Veteriner götürme</option>
+                    <option>Rutin besleme</option>
+                  </select>
+                </label>
+                <label>
+                  Sorumlu
+                  <select name="assignedUserId"></select>
+                </label>
+                <label class="full-span">
+                  Son tarih
+                  <input name="dueAt" type="datetime-local" required />
+                </label>
+                <label class="full-span">
+                  Not
+                  <textarea name="note" rows="3"></textarea>
+                </label>
+                <button type="submit" class="primary-button">Görev Ekle</button>
+              </form>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Sağlık Kaydı</h2>
+              </div>
+              <form id="healthForm" class="form-grid">
+                <label>
+                  Hayvan
+                  <select name="animalId" required></select>
+                </label>
+                <label>
+                  İşlem türü
+                  <select name="actionType">
+                    <option>Gözlem</option>
+                    <option>Aşı</option>
+                    <option>Tedavi</option>
+                    <option>Kontrol</option>
+                  </select>
+                </label>
+                <label class="full-span">
+                  Sonraki kontrol
+                  <input name="nextCheckDate" type="date" />
+                </label>
+                <label class="full-span">
+                  Açıklama
+                  <textarea name="description" rows="3" required></textarea>
+                </label>
+                <button type="submit" class="primary-button">Kayıt Ekle</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="contactView" class="view">
+          <div class="split-layout">
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Kampüs Bildirimi</h2>
+              </div>
+              <form id="reportForm" class="form-grid">
+                <label>
+                  Ad soyad
+                  <input name="reporterName" required />
+                </label>
+                <label>
+                  E-posta
+                  <input name="email" type="email" required />
+                </label>
+                <label>
+                  Konu
+                  <input name="subject" required />
+                </label>
+                <label>
+                  Konum
+                  <select name="locationId"></select>
+                </label>
+                <label class="full-span">
+                  Mesaj
+                  <textarea name="message" rows="5" required></textarea>
+                </label>
+                <button type="submit" class="primary-button">Bildirimi Gönder</button>
+              </form>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <h2>Son Bildirimler</h2>
+              </div>
+              <div id="reportList" class="list-stack"></div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="animalDialog">
+      <div class="dialog-head">
+        <h2 id="dialogTitle"></h2>
+        <button id="dialogClose" class="icon-button" aria-label="Kapat">×</button>
+      </div>
+      <div id="animalDetail"></div>
+    </dialog>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
